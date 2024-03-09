@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import nabil.awsrdbsexample.entities.Anime;
@@ -27,17 +28,16 @@ public class AnimeController {
     }
 
     @GetMapping
-    public ResponseEntity<Collection<Anime>> getAllAnime() {
+    public ResponseEntity<Collection<Anime>> getAllAnime(@RequestParam(required = false) String title) {
+        if(title != null) {
+            return ResponseEntity.ok(this.animeRepo.findByTitle(title));
+        }
         return ResponseEntity.ok(this.animeRepo.findAll());
     }
+
     @GetMapping("/{animeId}")
     public ResponseEntity<Anime> getAnime(@PathVariable Integer animeId) {
         return ResponseEntity.ok(animeRepo.findById(animeId).orElseThrow(AnimeNotFoundException::new));
-    }
-
-    @GetMapping("/{animeTitle}")
-    public ResponseEntity<Anime> getAnime(@PathVariable String animeTitle) {
-        return ResponseEntity.ok(animeRepo.findByTitle(animeTitle).orElseThrow(AnimeNotFoundException::new));
     }
 
     @PostMapping
