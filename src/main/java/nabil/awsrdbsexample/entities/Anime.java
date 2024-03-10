@@ -1,13 +1,21 @@
 package nabil.awsrdbsexample.entities;
 
+import java.util.EnumSet;
 import java.util.Objects;
+import java.util.Set;
 
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 
 @Entity
 public class Anime {
+    public enum Genre { ACTION, COMEDY };
 
     @Id
     @GeneratedValue
@@ -15,13 +23,19 @@ public class Anime {
     private String title;
     private int rating;
 
+    @ElementCollection
+    @CollectionTable(name = "genres", joinColumns = @JoinColumn(name = "anime_id"))
+    @Enumerated(EnumType.STRING)
+    private Set<Genre> genres;
+
     public Anime() {
     }
 
-    public Anime(Integer id, String title, int rating) {
+    public Anime(Integer id, String title, int rating, EnumSet<Genre> genres) {
         this.id = id;
         this.title = title;
         this.rating = rating;
+        this.genres = genres;
     }
 
     public Integer getId() {
@@ -46,6 +60,14 @@ public class Anime {
 
     public void setRating(int rating) {
         this.rating = rating;
+    }
+
+    public Set<Genre> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(EnumSet<Genre> genres) {
+        this.genres = genres;
     }
 
     @Override
